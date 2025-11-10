@@ -129,8 +129,9 @@ void redraw(void* data, struct wl_callback* callback, uint32_t time) {
   };
 
   struct wl_region* region;
-  assert(window->callback == callback);
-  window->callback = NULL;
+  if (callback) {
+    window->callback = NULL;
+  }
 
   float aspect;
 
@@ -170,16 +171,19 @@ void redraw(void* data, struct wl_callback* callback, uint32_t time) {
 
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, vertices);
   glEnableVertexAttribArray(0);
+  
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, vColors);
+  glEnableVertexAttribArray(1);
+  
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
   glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
   glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
   glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
   glDrawArrays(GL_TRIANGLE_STRIP, 16, 4);
   glDrawArrays(GL_TRIANGLE_STRIP, 20, 4);
+  
   glDisableVertexAttribArray(0);
-
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, vColors);
-  glEnableVertexAttribArray(1);
+  glDisableVertexAttribArray(1);
 
   wl_surface_set_opaque_region(window->surface, NULL);
   window->callback = wl_surface_frame(window->surface);
@@ -200,7 +204,10 @@ int main(int argc, char** argv) {
   window.window_size.height = 500;
 
   display.display = wl_display_connect(NULL);
-  assert(display.display);
+  if (!display.display) {
+    fprintf(stderr, "Failed to connect to Wayland display\n");
+    return 1;
+  }
 
   display.registry = wl_display_get_registry(display.display);
   wl_registry_add_listener(display.registry, &registry_listener, &display);
@@ -220,8 +227,25 @@ int main(int argc, char** argv) {
   sigint.sa_flags = SA_RESETHAND;
   sigaction(SIGINT, &sigint, NULL);
 
-  while (running && ret != -1)
+  // Wait for the window to be configured before starting the render loop
+  while (!window.configured && running && ret != -1) {
     ret = wl_display_dispatch(display.display);
+  }
+
+  // Start the render loop once window is configured
+  if (window.configured && running) {
+    // Trigger first redraw manually
+    redraw(&window, NULL, 0);
+    
+    // Set up frame callback for subsequent frames
+    window.callback = wl_surface_frame(window.surface);
+    wl_callback_add_listener(window.callback, &frame_listener, &window);
+  }
+
+  while (running && ret != -1) {
+    ret = wl_display_dispatch(display.display);
+    wl_display_flush(display.display);
+  }
 
   destroy_surface(&window);
   fini_egl(&display);

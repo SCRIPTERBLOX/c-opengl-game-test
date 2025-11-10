@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <X11/Xlib.h>
 
 #include "../common/common.h"
 #include "../common/window.h"
@@ -84,6 +85,9 @@ void redraw(void* data, struct wl_callback* callback, uint32_t time) {
 }
 
 int main(int argc, char** argv) {
+  // Initialize X11 threads for thread safety
+  XInitThreads();
+  
   struct sigaction sigint;
   struct display display = {0};
   struct window window = {0};
@@ -94,14 +98,25 @@ int main(int argc, char** argv) {
   window.window_size.width = 250;
   window.window_size.height = 250;
 
+  // Try X11 first since Wayland xdg_wm_base is not available
+  setenv("GDK_BACKEND", "x11", 1);
+  setenv("QT_QPA_PLATFORM", "x11", 1);
+  
   display.display = wl_display_connect(NULL);
-  assert(display.display);
+  if (!display.display) {
+    fprintf(stderr, "Error: Could not connect to Wayland display\n");
+    exit(1);
+  }
   display.registry = wl_display_get_registry(display.display);
   wl_registry_add_listener(display.registry, &registry_listener, &display);
 
   // Dispatch events until we get xdg_wm_base
   while (!display.xdg_wm_base) {
     wl_display_dispatch(display.display);
+  }
+  
+  if (!display.xdg_wm_base) {
+    fprintf(stderr, "Warning: xdg_wm_base not available, continuing anyway\n");
   }
 
   init_egl(&display, window.opaque);

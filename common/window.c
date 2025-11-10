@@ -44,8 +44,9 @@ static void configure_callback(void* data,
 
   window->configured = 1;
 
-  if (window->callback == NULL)
-    redraw(data, NULL, time);
+  // Start the render loop
+  window->callback = wl_surface_frame(window->surface);
+  wl_callback_add_listener(window->callback, &frame_listener, window);
 }
 
 static struct wl_callback_listener configure_callback_listener = {
@@ -102,12 +103,14 @@ static void toggle_fullscreen(struct window* window, int fullscreen) {
   window->fullscreen = fullscreen;
   window->configured = 0;
 
-  if (fullscreen) {
-    xdg_toplevel_set_fullscreen(window->xdg_toplevel, NULL);
-  } else {
-    xdg_toplevel_unset_fullscreen(window->xdg_toplevel);
-    handle_configure(window, NULL, 0,
-                     window->window_size.width, window->window_size.height);
+  if (window->xdg_toplevel) {
+    if (fullscreen) {
+      xdg_toplevel_set_fullscreen(window->xdg_toplevel, NULL);
+    } else {
+      xdg_toplevel_unset_fullscreen(window->xdg_toplevel);
+      handle_configure(window, NULL, 0,
+                       window->window_size.width, window->window_size.height);
+    }
   }
 
   callback = wl_display_sync(window->display->display);
@@ -120,8 +123,9 @@ void create_surface(struct window* window) {
 
   if (!display->xdg_wm_base) {
     fprintf(stderr, "Error: xdg_wm_base not available\n");
-    return;
+    exit(1);
   }
+  printf("xdg_wm_base is available\n");
 
   window->surface = wl_compositor_create_surface(display->compositor);
   window->xdg_surface = xdg_wm_base_get_xdg_surface(display->xdg_wm_base, window->surface);
@@ -129,10 +133,16 @@ void create_surface(struct window* window) {
   
   window->xdg_toplevel = xdg_surface_get_toplevel(window->xdg_surface);
   xdg_toplevel_add_listener(window->xdg_toplevel, &xdg_toplevel_listener, window);
-  xdg_toplevel_set_title(window->xdg_toplevel, "simple-egl");
+  xdg_toplevel_set_title(window->xdg_toplevel, "OpenGL Cube - Wayland");
   
   wl_surface_commit(window->surface);
   wl_display_roundtrip(display->display);
+  
+  // Make sure the surface is visible
+  wl_surface_damage(window->surface, 0, 0, 
+                   window->window_size.width, 
+                   window->window_size.height);
+  wl_surface_commit(window->surface);
 
   window->native = wl_egl_window_create(
       window->surface, window->window_size.width, window->window_size.height);
@@ -140,10 +150,12 @@ void create_surface(struct window* window) {
       display->egl.dpy, display->egl.conf, window->native, NULL);
 
   ret = eglMakeCurrent(window->display->egl.dpy, window->egl_surface,
-                       window->egl_surface, window->display->egl.ctx);
+                        window->egl_surface, window->display->egl.ctx);
   assert(ret == EGL_TRUE);
 
-  toggle_fullscreen(window, window->fullscreen);
+  // Trigger configure callback to start render loop
+  struct wl_callback* callback = wl_display_sync(window->display->display);
+  wl_callback_add_listener(callback, &configure_callback_listener, window);
 }
 
 void destroy_surface(struct window* window) {

@@ -2,6 +2,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <X11/Xlib.h>
 
 #include "window.h"
 
@@ -29,8 +30,15 @@ void init_egl(struct display* display, int opaque) {
   if (opaque)
     config_attribs[9] = 0;
 
-  display->egl.dpy = eglGetDisplay(display->display);
-  assert(display->egl.dpy);
+  // Try to get EGL display - first try Wayland, then X11 default
+  display->egl.dpy = eglGetDisplay((EGLNativeDisplayType)display->display);
+  if (!display->egl.dpy) {
+    display->egl.dpy = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+  }
+  if (!display->egl.dpy) {
+    fprintf(stderr, "Failed to get EGL display\n");
+    exit(1);
+  }
 
   ret = eglInitialize(display->egl.dpy, &major, &minor);
   assert(ret == EGL_TRUE);
@@ -39,6 +47,10 @@ void init_egl(struct display* display, int opaque) {
 
   ret = eglChooseConfig(display->egl.dpy, config_attribs, &display->egl.conf, 1,
                         &n);
+  if (!ret || n != 1) {
+    fprintf(stderr, "eglChooseConfig failed: ret=%d, n=%d\n", ret, n);
+    fprintf(stderr, "EGL error: 0x%x\n", eglGetError());
+  }
   assert(ret && n == 1);
 
   display->egl.ctx = eglCreateContext(display->egl.dpy, display->egl.conf,
