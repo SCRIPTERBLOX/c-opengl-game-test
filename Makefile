@@ -26,6 +26,9 @@ cube : ./8.cube/main.o  ./common/common.o ./common/window.o ./common/transform.o
 cube_headless : ./8.cube/main_headless.o ./common/transform.o
 	gcc ./8.cube/main_headless.c ./common/transform.c ${CFLAGS} -o $@ -lGLESv2 -lEGL -lm
 
+renderb : ./render/render.o ./common/common.o ./common/window.o ./common/transform.o ./common/xdg-shell-protocol.o
+	gcc ./render/render.c ./common/common.c ./common/window.c ./common/transform.c ./common/xdg-shell-protocol.o ${CFLAGS} -o $@ ${LIBS}
+
 clean:
 	rm -f 1.triangle/*.o *~ 
 	rm -f triangle
@@ -45,3 +48,4 @@ clean:
 	rm -f cube
 	rm cube_headless
 	rm cube_x11
+	rm renderb
