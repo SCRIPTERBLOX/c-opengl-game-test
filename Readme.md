@@ -10,27 +10,28 @@ My attempt at making a collection of game starting stuff
 
 #### Debian (and debian based)
 
-```sudo apt get libglew-dev libwayland-dev libcairo2-dev```
+```sh
+sudo apt get libglew-dev libwayland-dev libcairo2-dev```
 
 
 
 #### Arch
 
-```sudo pacman -S glew wayland cairo```
+```sh
+sudo pacman -S glew wayland cairo```
 
 
 
 ### Download repo
 
-```git clone https://github.com/SCRIPTERBLOX/c-opengl-game-test```
+```sh
+git clone https://github.com/SCRIPTERBLOX/c-opengl-game-test```
 
 
 
 ### Compile and run
 
-```cd c-opengl-game-test
-```
-
+```sh
+cd c-opengl-game-test
 make renderb
-
 ./renderb```
