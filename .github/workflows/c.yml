@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - name: configure
-      run: ./configure
+      run: ./configure.sh
     - uses: actions/checkout@v4
     - name: make
       run: make renderb
