@@ -2,6 +2,7 @@
 #include "shaders.h"
 #include "geometry.h"
 #include "../common/common.h"
+#include "ui/ui.h"
 
 void renderer_init(struct window* window) {
     // Initialize OpenGL ES context for triangle
@@ -34,12 +35,14 @@ void redraw(void* data, struct wl_callback* callback, uint32_t time) {
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
 
+  render_ui(data);
+
     // Draw triangle (left side)
-    glUseProgram(window->gl.program);
-    glVertexAttribPointer(window->gl.pos, 3, GL_FLOAT, GL_FALSE, 0, triangle_verts);
-    glEnableVertexAttribArray(window->gl.pos);
-    glDrawArrays(GL_TRIANGLES, 0, triangle_vert_count);
-    glDisableVertexAttribArray(window->gl.pos);
+    //glUseProgram(window->gl.program);
+    //glVertexAttribPointer(window->gl.pos, 3, GL_FLOAT, GL_FALSE, 0, triangle_verts);
+    //glEnableVertexAttribArray(window->gl.pos);
+    //glDrawArrays(GL_TRIANGLES, 0, triangle_vert_count);
+    //glDisableVertexAttribArray(window->gl.pos);
 
     // Draw cube (right side)
     glUseProgram(cube_program);
