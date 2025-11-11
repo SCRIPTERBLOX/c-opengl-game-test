@@ -68,75 +68,104 @@ const char* cube_frag_shader =
     "   gl_FragColor = vVaryingColor;                \n"
     "}";
 
-// Triangle vertices
+// Triangle vertices - positioned on left side
 static const GLfloat triangle_verts[] = {
     -0.8f, -0.5f, 0.0f,
     -0.3f, -0.5f, 0.0f,
     -0.55f, 0.5f, 0.0f
 };
 
-// Cube vertices
+// Cube vertices - using individual triangles for each face
 static const GLfloat cube_vertices[] = {
-    // front
-    -1.0f, -1.0f, +1.0f,
-    +1.0f, -1.0f, +1.0f,
-    -1.0f, +1.0f, +1.0f,
-    +1.0f, +1.0f, +1.0f,
-    // back
-    +1.0f, -1.0f, -1.0f,
-    -1.0f, -1.0f, -1.0f,
-    +1.0f, +1.0f, -1.0f,
-    -1.0f, +1.0f, -1.0f,
-    // right
-    +1.0f, -1.0f, +1.0f,
-    +1.0f, -1.0f, -1.0f,
-    +1.0f, +1.0f, +1.0f,
-    +1.0f, +1.0f, -1.0f,
-    // left
-    -1.0f, -1.0f, -1.0f,
-    -1.0f, -1.0f, +1.0f,
-    -1.0f, +1.0f, -1.0f,
-    -1.0f, +1.0f, +1.0f,
-    // top
-    -1.0f, +1.0f, +1.0f,
-    +1.0f, +1.0f, +1.0f,
-    -1.0f, +1.0f, -1.0f,
-    +1.0f, +1.0f, -1.0f,
-    // bottom
-    -1.0f, -1.0f, -1.0f,
-    +1.0f, -1.0f, -1.0f,
-    -1.0f, -1.0f, +1.0f,
-    +1.0f, -1.0f, +1.0f
+    // Front face (2 triangles)
+    -1.0f, -1.0f,  1.0f,   // bottom-left
+     1.0f, -1.0f,  1.0f,   // bottom-right
+     1.0f,  1.0f,  1.0f,   // top-right
+    -1.0f, -1.0f,  1.0f,   // bottom-left
+     1.0f,  1.0f,  1.0f,   // top-right
+    -1.0f,  1.0f,  1.0f,   // top-left
+    
+    // Back face (2 triangles)
+     1.0f, -1.0f, -1.0f,   // bottom-right
+    -1.0f, -1.0f, -1.0f,   // bottom-left
+    -1.0f,  1.0f, -1.0f,   // top-left
+     1.0f, -1.0f, -1.0f,   // bottom-right
+    -1.0f,  1.0f, -1.0f,   // top-left
+     1.0f,  1.0f, -1.0f,   // top-right
+    
+    // Right face (2 triangles)
+     1.0f, -1.0f,  1.0f,   // bottom-front
+     1.0f, -1.0f, -1.0f,   // bottom-back
+     1.0f,  1.0f, -1.0f,   // top-back
+     1.0f, -1.0f,  1.0f,   // bottom-front
+     1.0f,  1.0f, -1.0f,   // top-back
+     1.0f,  1.0f,  1.0f,   // top-front
+    
+    // Left face (2 triangles)
+    -1.0f, -1.0f, -1.0f,   // bottom-back
+    -1.0f, -1.0f,  1.0f,   // bottom-front
+    -1.0f,  1.0f,  1.0f,   // top-front
+    -1.0f, -1.0f, -1.0f,   // bottom-back
+    -1.0f,  1.0f,  1.0f,   // top-front
+    -1.0f,  1.0f, -1.0f,   // top-back
+    
+    // Top face (2 triangles)
+    -1.0f,  1.0f,  1.0f,   // left-front
+     1.0f,  1.0f,  1.0f,   // right-front
+     1.0f,  1.0f, -1.0f,   // right-back
+    -1.0f,  1.0f,  1.0f,   // left-front
+     1.0f,  1.0f, -1.0f,   // right-back
+    -1.0f,  1.0f, -1.0f,   // left-back
+    
+    // Bottom face (2 triangles)
+    -1.0f, -1.0f, -1.0f,   // left-back
+     1.0f, -1.0f, -1.0f,   // right-back
+     1.0f, -1.0f,  1.0f,   // right-front
+    -1.0f, -1.0f, -1.0f,   // left-back
+     1.0f, -1.0f,  1.0f,   // right-front
+    -1.0f, -1.0f,  1.0f    // left-front
 };
 
-// Cube colors
+// Cube colors - matching the new triangle layout
 static const GLfloat cube_colors[] = {
-    // front: white
+    // Front face (6 vertices for 2 triangles)
+    1.0f, 1.0f, 1.0f,  // white
     1.0f, 1.0f, 1.0f,
     1.0f, 1.0f, 1.0f,
     1.0f, 1.0f, 1.0f,
     1.0f, 1.0f, 1.0f,
-    // back: red
+    1.0f, 1.0f, 1.0f,
+    // Back face (6 vertices)
+    1.0f, 0.0f, 0.0f,  // red
     1.0f, 0.0f, 0.0f,
     1.0f, 0.0f, 0.0f,
     1.0f, 0.0f, 0.0f,
     1.0f, 0.0f, 0.0f,
-    // right: green
+    1.0f, 0.0f, 0.0f,
+    // Right face (6 vertices)
+    0.0f, 1.0f, 0.0f,  // green
     0.0f, 1.0f, 0.0f,
     0.0f, 1.0f, 0.0f,
     0.0f, 1.0f, 0.0f,
     0.0f, 1.0f, 0.0f,
-    // left: blue
+    0.0f, 1.0f, 0.0f,
+    // Left face (6 vertices)
+    0.0f, 0.0f, 1.0f,  // blue
     0.0f, 0.0f, 1.0f,
     0.0f, 0.0f, 1.0f,
     0.0f, 0.0f, 1.0f,
     0.0f, 0.0f, 1.0f,
-    // top: yellow
+    0.0f, 0.0f, 1.0f,
+    // Top face (6 vertices)
+    1.0f, 1.0f, 0.0f,  // yellow
     1.0f, 1.0f, 0.0f,
     1.0f, 1.0f, 0.0f,
     1.0f, 1.0f, 0.0f,
     1.0f, 1.0f, 0.0f,
-    // bottom: magenta
+    1.0f, 1.0f, 0.0f,
+    // Bottom face (6 vertices)
+    1.0f, 0.0f, 1.0f,  // magenta
+    1.0f, 0.0f, 1.0f,
     1.0f, 0.0f, 1.0f,
     1.0f, 0.0f, 1.0f,
     1.0f, 0.0f, 1.0f,
@@ -218,6 +247,10 @@ void redraw(void* data, struct wl_callback* callback, uint32_t time) {
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);  // Enable proper face culling
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
 
     // Draw triangle (left side)
     glUseProgram(window->gl.program);
@@ -252,13 +285,13 @@ void redraw(void* data, struct wl_callback* callback, uint32_t time) {
     glVertexAttribPointer(cube_color_loc, 3, GL_FLOAT, GL_FALSE, 0, cube_colors);
     glEnableVertexAttribArray(cube_color_loc);
 
-    // Draw cube faces
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
-    glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
-    glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
-    glDrawArrays(GL_TRIANGLE_STRIP, 16, 4);
-    glDrawArrays(GL_TRIANGLE_STRIP, 20, 4);
+    // Draw cube faces as individual triangles (6 vertices per face)
+    glDrawArrays(GL_TRIANGLES, 0, 6);    // front face
+    glDrawArrays(GL_TRIANGLES, 6, 6);    // back face  
+    glDrawArrays(GL_TRIANGLES, 12, 6);   // right face
+    glDrawArrays(GL_TRIANGLES, 18, 6);   // left face
+    glDrawArrays(GL_TRIANGLES, 24, 6);   // top face
+    glDrawArrays(GL_TRIANGLES, 30, 6);   // bottom face
 
     glDisableVertexAttribArray(cube_pos_loc);
     glDisableVertexAttribArray(cube_color_loc);
