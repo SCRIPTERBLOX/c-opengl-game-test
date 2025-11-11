@@ -1,7 +1,7 @@
 LIBS = -lGLESv2 -lEGL -lm -lX11  -lcairo -lwayland-client -lwayland-server -lwayland-cursor -lwayland-egl
 CFLAGS =-g -I/usr/include/cairo -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libdrm -I/usr/include/libpng12  -I/usr/include
 
-all: triangle_animation triangle triangle_simple simple_texture rotate_texture triangle_color mvp_triangle cube cube_headless \
+all: triangle_animation triangle triangle_simple simple_texture rotate_texture triangle_color mvp_triangle cube cube_headless render \
 
 triangle_animation : ./2.triangle_animation/main.o  ./common/common.o ./common/window.o ./common/xdg-shell-protocol.o
 	gcc ./2.triangle_animation/main.c ./common/common.c ./common/window.c ./common/xdg-shell-protocol.c ${CFLAGS} -o $@ ${LIBS}
@@ -26,8 +26,23 @@ cube : ./8.cube/main.o  ./common/common.o ./common/window.o ./common/transform.o
 cube_headless : ./8.cube/main_headless.o ./common/transform.o
 	gcc ./8.cube/main_headless.c ./common/transform.c ${CFLAGS} -o $@ -lGLESv2 -lEGL -lm
 
-renderb : ./render/render.o ./common/common.o ./common/window.o ./common/transform.o ./common/xdg-shell-protocol.o
-	gcc ./render/render.c ./common/common.c ./common/window.c ./common/transform.c ./common/xdg-shell-protocol.o ${CFLAGS} -o $@ ${LIBS}
+render_objs : ./render/render.o ./render/renderer.o ./render/shaders.o ./render/geometry.o
+
+# Render module object files
+./render/render.o: render/render.c render/render.h
+	gcc ${CFLAGS} -c -o $@ $<
+
+./render/renderer.o: render/renderer.c render/renderer.h render/shaders.h render/geometry.h
+	gcc ${CFLAGS} -c -o $@ $<
+
+./render/shaders.o: render/shaders.c render/shaders.h
+	gcc ${CFLAGS} -c -o $@ $<
+
+./render/geometry.o: render/geometry.c render/geometry.h
+	gcc ${CFLAGS} -c -o $@ $<
+
+renderb : ./render/render.o ./render/renderer.o ./render/shaders.o ./render/geometry.o ./common/common.o ./common/window.o ./common/transform.o ./common/xdg-shell-protocol.o
+	gcc ./render/render.c ./render/renderer.c ./render/shaders.c ./render/geometry.c ./common/common.c ./common/window.c ./common/transform.c ./common/xdg-shell-protocol.c ${CFLAGS} -o renderb ${LIBS}
 
 clean:
 	rm -f 1.triangle/*.o *~ 
@@ -46,6 +61,8 @@ clean:
 	rm -f mvp_triangle
 	rm -f 8.cube/*.o *~ 
 	rm -f cube
-	rm cube_headless
-	rm cube_x11
+	rm -f cube_headless
+	rm -f cube_x11
+	rm -f render/render
+	rm -f render/*.o
 	rm renderb
