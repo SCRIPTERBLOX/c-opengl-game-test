@@ -44,7 +44,7 @@ render_objs : ./render/render.o ./render/renderer.o ./render/shaders.o ./render/
 	gcc ${CFLAGS} -c -o $@ $<
 
 renderb : ./render/render.o ./render/renderer.o ./render/shaders.o ./render/geometry.o ./common/common.o ./common/window.o ./common/transform.o ./common/xdg-shell-protocol.o
-	gcc ./render/render.c ./render/renderer.c ./render/shaders.c ./render/geometry.c ./common/common.c ./common/window.c ./common/transform.c ./common/xdg-shell-protocol.c ${CFLAGS} -o renderb ${LIBS}
+	gcc ./render/render.c ./render/renderer.c ./render/shaders.c ./render/geometry.c ./render/ui/ui.c ./common/common.c ./common/window.c ./common/transform.c ./common/xdg-shell-protocol.c ${CFLAGS} -o renderb ${LIBS}
 
 clean:
 	rm -f 1.triangle/*.o *~ 
