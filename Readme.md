@@ -27,6 +27,7 @@ git clone https://github.com/SCRIPTERBLOX/c-opengl-game-test
 ```
 
 
+
 ### Compile and run
 
 ```sh
