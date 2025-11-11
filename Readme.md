@@ -26,6 +26,7 @@ sudo pacman -S glew wayland cairo
 git clone https://github.com/SCRIPTERBLOX/c-opengl-game-test
 ```
 
+
 ### Compile and run
 
 ```sh
