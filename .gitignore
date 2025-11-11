@@ -3,3 +3,6 @@
 4.simple_texture/*.o
 8.cube/*.o
 common/*.o
+render/*.o
+render/ui/*.o
+renderb
