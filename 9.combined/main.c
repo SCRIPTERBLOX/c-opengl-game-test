@@ -38,14 +38,21 @@
 // Triangle shader (simple)
 const char* triangle_vert_shader =
     "attribute vec4 pos;\n"
+    "varying vec4 vPosition;\n"
     "void main() {\n"
     "  gl_Position = pos;\n"
+    "  vPosition = pos;\n"
     "}\n";
 
 const char* triangle_frag_shader =
     "precision mediump float;\n"
+    "varying vec4 vPosition;\n"
     "void main() {\n"
-    "  gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n"
+    "  // Use position to influence color\n"
+    "  float r = (vPosition.x + 1.0) * 0.5;  // Map -1 to 1 -> 0 to 1\n"
+    "  float g = (vPosition.y + 1.0) * 0.5;  // Map -1 to 1 -> 0 to 1\n"
+    "  float b = (vPosition.z + 1.0) * 0.5;  // Map -1 to 1 -> 0 to 1\n"
+    "  gl_FragColor = vec4(r, g, b, 1.0);\n"
     "}\n";
 
 // Cube shader (with MVP matrix) - ES 2.0 compatible
@@ -54,8 +61,7 @@ const char* cube_vert_shader =
     "attribute vec4 pos;                         \n"
     "attribute vec4 color;                       \n"
     "varying vec4 vVaryingColor;                \n"
-    "void main()                                \n"
-    "{                                          \n"
+    "void main() {                               \n"
     "  gl_Position = u_mvpMatrix * pos;         \n"
     "  vVaryingColor = color;                   \n"
     "}";
@@ -63,8 +69,7 @@ const char* cube_vert_shader =
 const char* cube_frag_shader =
     "precision mediump float;                        \n"
     "varying vec4 vVaryingColor;                    \n"
-    "void main()                                     \n"
-    "{                                               \n"
+    "void main() {                                  \n"
     "   gl_FragColor = vVaryingColor;                \n"
     "}";
 
