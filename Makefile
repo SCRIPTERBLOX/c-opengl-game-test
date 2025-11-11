@@ -1,6 +1,8 @@
 LIBS = -lGLESv2 -lEGL -lm -lX11  -lcairo -lwayland-client -lwayland-server -lwayland-cursor -lwayland-egl
 CFLAGS =-g -I/usr/include/cairo -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libdrm -I/usr/include/libpng12  -I/usr/include
 
+# Test change
+
 all: triangle_animation triangle triangle_simple simple_texture rotate_texture triangle_color mvp_triangle cube cube_headless render \
 
 triangle_animation : ./2.triangle_animation/main.o  ./common/common.o ./common/window.o ./common/xdg-shell-protocol.o
