@@ -37,6 +37,6 @@ git clone https://github.com/SCRIPTERBLOX/c-opengl-game-test
 
 ```sh
 cd c-opengl-game-test
-make renderb
-./renderb
+chmod +x run.sh
+./run.sh
 ```
