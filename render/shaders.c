@@ -1,26 +1,20 @@
 #include "shaders.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "../file_reading/read_shader.h"
 
-// Triangle shader (simple)
-const char* triangle_vert_shader =
-    "attribute vec4 pos;\n"
-    "varying vec4 vPosition;\n"
-    "void main() {\n"
-    "  gl_Position = pos;\n"
-    "  vPosition = pos;\n"
-    "}\n";
+char* triangle_vert_shader;
+char* triangle_frag_shader;
 
-const char* triangle_frag_shader =
-    "precision mediump float;\n"
-    "varying vec4 vPosition;\n"
-    "void main() {\n"
-    "  // Use position to influence color\n"
-    "  float r = (vPosition.x + 1.0) * 0.5;  // Map -1 to 1 -> 0 to 1\n"
-    "  float g = (vPosition.y + 1.0) * 0.5;  // Map -1 to 1 -> 0 to 1\n"
-    "  float b = (vPosition.z + 1.0) * 0.5;  // Map -1 to 1 -> 0 to 1\n"
-    "  gl_FragColor = vec4(r, g, b, 1.0);\n"
-    "}\n";
+void init_triangle_shader() {
+    triangle_vert_shader = load_shader_source("shaders/triangle_vert.vs");
+    triangle_frag_shader = load_shader_source("shaders/triangle_frag.fs");
+    
+    if (!triangle_vert_shader || !triangle_frag_shader) {
+        fprintf(stderr, "Failed to load triangle shaders\n");
+        exit(1);
+    }
+}
 
 // Cube shader program and locations
 GLuint cube_program;

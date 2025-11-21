@@ -4,6 +4,9 @@
 #include "ui/ui.h"
 
 void renderer_init(struct window* window) {
+    // Load triangle shaders from files
+    init_triangle_shader();
+    
     // Initialize OpenGL ES context for triangle
     init_gl(window, triangle_vert_shader, triangle_frag_shader);
 }
