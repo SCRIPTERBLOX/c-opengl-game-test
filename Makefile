@@ -22,12 +22,6 @@ triangle_color : ./6.triangle_color/main.o  ./common/common.o ./common/window.o 
 mvp_triangle : ./7.mvp_triangle/main.o  ./common/common.o ./common/window.o ./common/transform.o ./common/xdg-shell-protocol.o
 	gcc ./7.mvp_triangle/main.c ./common/common.c ./common/window.c ./common/transform.c ./common/xdg-shell-protocol.c ${CFLAGS} -o $@ ${LIBS}
 
-cube : ./8.cube/main.o  ./common/common.o ./common/window.o ./common/transform.o ./common/xdg-shell-protocol.o
-	gcc ./8.cube/main.c ./common/common.c ./common/window.c ./common/transform.c ./common/xdg-shell-protocol.c ${CFLAGS} -o $@ ${LIBS}
-
-cube_headless : ./8.cube/main_headless.o ./common/transform.o
-	gcc ./8.cube/main_headless.c ./common/transform.c ${CFLAGS} -o $@ -lGLESv2 -lEGL -lm
-
 render_objs : ./render/render.o ./render/renderer.o ./render/shaders.o ./render/geometry.o
 
 # Render module object files
@@ -61,10 +55,6 @@ clean:
 	rm -f triangle_color
 	rm -f 7.mvp_triangle/*.o *~ 
 	rm -f mvp_triangle
-	rm -f 8.cube/*.o *~ 
-	rm -f cube
-	rm -f cube_headless
-	rm -f cube_x11
 	rm -f render/render
 	rm -f render/*.o
 	rm renderb
