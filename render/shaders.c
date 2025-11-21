@@ -22,24 +22,6 @@ const char* triangle_frag_shader =
     "  gl_FragColor = vec4(r, g, b, 1.0);\n"
     "}\n";
 
-// Cube shader (with MVP matrix) - ES 2.0 compatible
-const char* cube_vert_shader =
-    "uniform mat4 u_mvpMatrix;                  \n"
-    "attribute vec4 pos;                         \n"
-    "attribute vec4 color;                       \n"
-    "varying vec4 vVaryingColor;                \n"
-    "void main() {                               \n"
-    "  gl_Position = u_mvpMatrix * pos;         \n"
-    "  vVaryingColor = color;                   \n"
-    "}";
-
-const char* cube_frag_shader =
-    "precision mediump float;                        \n"
-    "varying vec4 vVaryingColor;                    \n"
-    "void main() {                                  \n"
-    "   gl_FragColor = vVaryingColor;                \n"
-    "}";
-
 // Cube shader program and locations
 GLuint cube_program;
 GLint cube_pos_loc, cube_color_loc, cube_mvp_loc;
@@ -86,12 +68,4 @@ GLuint create_shader_program(const char* vert_source, const char* frag_source) {
     glDeleteShader(frag_shader);
     
     return program;
-}
-
-void init_cube_shader(void) {
-    // Create cube shader program
-    cube_program = create_shader_program(cube_vert_shader, cube_frag_shader);
-    cube_pos_loc = glGetAttribLocation(cube_program, "pos");
-    cube_color_loc = glGetAttribLocation(cube_program, "color");
-    cube_mvp_loc = glGetUniformLocation(cube_program, "u_mvpMatrix");
 }

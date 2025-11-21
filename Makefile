@@ -22,13 +22,13 @@ triangle_color : ./6.triangle_color/main.o  ./common/common.o ./common/window.o 
 mvp_triangle : ./7.mvp_triangle/main.o  ./common/common.o ./common/window.o ./common/transform.o ./common/xdg-shell-protocol.o
 	gcc ./7.mvp_triangle/main.c ./common/common.c ./common/window.c ./common/transform.c ./common/xdg-shell-protocol.c ${CFLAGS} -o $@ ${LIBS}
 
-render_objs : ./render/render.o ./render/renderer.o ./render/shaders.o ./render/geometry.o
+render_objs : ./render/render.o ./render/renderer.o ./render/shaders.o
 
 # Render module object files
 ./render/render.o: render/render.c render/render.h
 	gcc ${CFLAGS} -c -o $@ $<
 
-./render/renderer.o: render/renderer.c render/renderer.h render/shaders.h render/geometry.h
+./render/renderer.o: render/renderer.c render/renderer.h render/shaders.h
 	gcc ${CFLAGS} -c -o $@ $<
 
 ./render/shaders.o: render/shaders.c render/shaders.h
@@ -37,8 +37,8 @@ render_objs : ./render/render.o ./render/renderer.o ./render/shaders.o ./render/
 ./render/geometry.o: render/geometry.c render/geometry.h
 	gcc ${CFLAGS} -c -o $@ $<
 
-renderb : ./render/render.o ./render/renderer.o ./render/shaders.o ./render/geometry.o ./common/common.o ./common/window.o ./common/transform.o ./common/xdg-shell-protocol.o
-	gcc ./render/render.c ./render/renderer.c ./render/shaders.c ./render/geometry.c ./render/ui/ui.c ./common/common.c ./common/window.c ./common/transform.c ./common/xdg-shell-protocol.c ${CFLAGS} -o renderb ${LIBS}
+renderb : ./render/render.o ./render/renderer.o ./render/shaders.o ./common/common.o ./common/window.o ./common/transform.o ./common/xdg-shell-protocol.o
+	gcc ./render/geometry.c ./render/render.c ./render/renderer.c ./render/shaders.c ./render/ui/ui.c ./common/common.c ./common/window.c ./common/transform.c ./common/xdg-shell-protocol.c ${CFLAGS} -o renderb ${LIBS}
 
 clean:
 	rm -f 1.triangle/*.o *~ 
