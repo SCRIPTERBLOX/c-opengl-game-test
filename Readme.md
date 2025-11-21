@@ -1,4 +1,4 @@
-# c-opengl-game-test
+# c-opengl-game-test (2d)
 
 My attempt at making a collection of game starting stuff
 
