@@ -61,13 +61,6 @@ void redraw(void* data, struct wl_callback* callback, uint32_t time) {
 
   render_ui(data);
 
-  // Draw triangle (left side)
-  //glUseProgram(window->gl.program);
-  //glVertexAttribPointer(window->gl.pos, 3, GL_FLOAT, GL_FALSE, 0, triangle_verts);
-  //glEnableVertexAttribArray(window->gl.pos);
-  //glDrawArrays(GL_TRIANGLES, 0, triangle_vert_count);
-  //glDisableVertexAttribArray(window->gl.pos);
-
   // Set up perspective
   float aspect = (float)window->geometry.width / (float)window->geometry.height;
   esMatrixLoadIdentity(&perspective);

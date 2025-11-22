@@ -13,8 +13,7 @@
 struct window;
 struct seat;
 
-typedef struct
-{
+typedef struct {
    GLfloat   m[4][4];
 } ESMatrix;
 

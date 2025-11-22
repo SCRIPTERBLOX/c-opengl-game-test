@@ -1,6 +1,6 @@
 #include "geometry.h"
 
-// Triangle vertices with position and texture coordinates (matching simple_texture format)
+// Triangle vertices with position and texture coordinates 
 const GLfloat triangle_verts[] = {
     -0.8f, 0.5f, 0.0f,   // Position 0
     0.0f, 0.0f,             // TexCoord 0
