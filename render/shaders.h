@@ -26,4 +26,17 @@ void init_cube_shader(void);
 // Initialize triangle shader
 void init_triangle_shader(void);
 
+// Texture shader sources
+extern char* texture_vert_shader;
+extern char* texture_frag_shader;
+
+// Texture shader program and locations
+extern GLuint texture_program;
+extern GLint texture_pos_loc;
+extern GLint texture_texcoord_loc;
+extern GLint texture_sampler_loc;
+
+// Initialize texture shader
+void init_texture_shader(void);
+
 #endif // SHADERS_H

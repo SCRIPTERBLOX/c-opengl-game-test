@@ -1,4 +1,4 @@
-LIBS = -lGLESv2 -lEGL -lm -lX11  -lcairo -lwayland-client -lwayland-server -lwayland-cursor -lwayland-egl
+LIBS = -lGLESv2 -lEGL -lm -lX11  -lcairo -lwayland-client -lwayland-server -lwayland-cursor -lwayland-egl -lpng16
 CFLAGS =-g -I/usr/include/cairo -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libdrm -I/usr/include/libpng12  -I/usr/include
 
 # Test change 2
@@ -40,8 +40,8 @@ render_objs : ./render/render.o ./render/renderer.o ./render/shaders.o
 ./file_reading/read_shader.o: file_reading/read_shader.c file_reading/read_shader.h
 	gcc ${CFLAGS} -c -o $@ $<
 
-renderb : ./render/render.o ./render/renderer.o ./render/shaders.o ./common/common.o ./common/window.o ./common/transform.o ./common/xdg-shell-protocol.o
-	gcc ./render/geometry.c file_reading/read_shader.c ./render/render.c ./render/renderer.c ./render/shaders.c ./render/ui/ui.c ./common/common.c ./common/window.c ./common/transform.c ./common/xdg-shell-protocol.c ${CFLAGS} -o renderb ${LIBS}
+renderb : ./render/render.o ./render/renderer.o ./render/shaders.o ./common/common.o ./common/window.o ./common/transform.o ./common/xdg-shell-protocol.o ./file_reading/texture_loader.o
+	gcc ./render/geometry.c file_reading/read_shader.c ./render/render.c ./render/renderer.c ./render/shaders.c ./render/ui/ui.c ./common/common.c ./common/window.c ./common/transform.c ./common/xdg-shell-protocol.c ./file_reading/texture_loader.c ${CFLAGS} -o renderb ${LIBS}
 
 clean:
 	rm -f 1.triangle/*.o *~ 

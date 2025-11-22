@@ -2,9 +2,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../file_reading/read_shader.h"
+#include "../file_reading/texture_loader.h"
 
 char* triangle_vert_shader;
 char* triangle_frag_shader;
+char* texture_vert_shader;
+char* texture_frag_shader;
+
+// Texture shader program and locations
+GLuint texture_program;
+GLint texture_pos_loc, texture_texcoord_loc, texture_sampler_loc;
 
 void init_triangle_shader() {
     triangle_vert_shader = load_shader_source("shaders/triangle_vert.vs");
@@ -62,4 +69,24 @@ GLuint create_shader_program(const char* vert_source, const char* frag_source) {
     glDeleteShader(frag_shader);
     
     return program;
+}
+
+void init_texture_shader() {
+    texture_vert_shader = load_shader_source("shaders/texture.vs");
+    texture_frag_shader = load_shader_source("shaders/texture.fs");
+    
+    if (!texture_vert_shader || !texture_frag_shader) {
+        fprintf(stderr, "Failed to load texture shaders\n");
+        exit(1);
+    }
+    
+    texture_program = create_shader_program(texture_vert_shader, texture_frag_shader);
+    
+    texture_pos_loc = glGetAttribLocation(texture_program, "a_position");
+    texture_texcoord_loc = glGetAttribLocation(texture_program, "a_texCoord");
+    texture_sampler_loc = glGetUniformLocation(texture_program, "s_texture");
+}
+
+GLuint load_png_as_texture(const char* filename) {
+    return load_texture_from_png(filename);
 }

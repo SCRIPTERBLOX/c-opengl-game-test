@@ -2,13 +2,36 @@
 #include "shaders.h"
 #include "../common/common.h"
 #include "ui/ui.h"
+#include "../file_reading/texture_loader.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+// Forward declaration
+GLuint load_png_as_texture(const char* filename);
 
 void renderer_init(struct window* window) {
-    // Load triangle shaders from files
-    init_triangle_shader();
+    // Load texture shader from files
+    init_texture_shader();
     
-    // Initialize OpenGL ES context for triangle
-    init_gl(window, triangle_vert_shader, triangle_frag_shader);
+    // Initialize OpenGL ES context with texture shader
+    init_gl(window, texture_vert_shader, texture_frag_shader);
+    
+    // Try to load PNG, fallback to simple texture
+    window->gl.texture_id = load_png_as_texture("tex.png");
+    if (window->gl.texture_id == 0) {
+        fprintf(stderr, "Failed to create texture\n");
+        exit(1);
+    }
+    
+    // Store sampler location in window.gl
+    window->gl.sampler = texture_sampler_loc;
+    
+    // Enable texturing
+    glEnable(GL_TEXTURE_2D);
+    
+    // Set proper blending for transparency
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void redraw(void* data, struct wl_callback* callback, uint32_t time) {
