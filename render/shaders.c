@@ -9,9 +9,13 @@ char* triangle_frag_shader;
 char* texture_vert_shader;
 char* texture_frag_shader;
 
+// Global texture info for dimensions
+TextureInfo current_texture_info = {0, 0, 0};
+
 // Texture shader program and locations
 GLuint texture_program;
 GLint texture_pos_loc, texture_texcoord_loc, texture_sampler_loc;
+GLint texture_texture_size_loc, texture_geometry_size_loc;
 
 void init_triangle_shader() {
     triangle_vert_shader = load_shader_source("shaders/triangle_vert.vs");
@@ -85,8 +89,15 @@ void init_texture_shader() {
     texture_pos_loc = glGetAttribLocation(texture_program, "a_position");
     texture_texcoord_loc = glGetAttribLocation(texture_program, "a_texCoord");
     texture_sampler_loc = glGetUniformLocation(texture_program, "s_texture");
+    texture_texture_size_loc = glGetUniformLocation(texture_program, "u_textureSize");
+    texture_geometry_size_loc = glGetUniformLocation(texture_program, "u_geometrySize");
 }
 
 GLuint load_png_as_texture(const char* filename) {
-    return load_texture_from_png(filename);
+    current_texture_info = load_texture_from_png(filename);
+    return current_texture_info.texture_id;
+}
+
+TextureInfo get_current_texture_info() {
+    return current_texture_info;
 }

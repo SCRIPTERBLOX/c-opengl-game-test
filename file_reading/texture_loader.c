@@ -4,31 +4,32 @@
 #include <png.h>
 #include <string.h>
 
-GLuint load_texture_from_png(const char* filename) {
+TextureInfo load_texture_from_png(const char* filename) {
+    TextureInfo result = {0, 0, 0};
     // Simple, reliable PNG loader that creates RGB data
     FILE* fp = fopen(filename, "rb");
     if (!fp) {
         fprintf(stderr, "Failed to open PNG file: %s\n", filename);
-        return 0;
+        return result;
     }
 
     png_structp png = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
     if (!png) {
         fclose(fp);
-        return 0;
+        return result;
     }
 
     png_infop info = png_create_info_struct(png);
     if (!info) {
         png_destroy_read_struct(&png, NULL, NULL);
         fclose(fp);
-        return 0;
+        return result;
     }
 
     if (setjmp(png_jmpbuf(png))) {
         png_destroy_read_struct(&png, &info, NULL);
         fclose(fp);
-        return 0;
+        return result;
     }
 
     png_init_io(png, fp);
@@ -104,5 +105,8 @@ GLuint load_texture_from_png(const char* filename) {
     free(pixel_data);
     png_destroy_read_struct(&png, &info, NULL);
 
-    return texture;
+    result.texture_id = texture;
+    result.width = width;
+    result.height = height;
+    return result;
 }

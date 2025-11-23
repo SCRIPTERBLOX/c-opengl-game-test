@@ -2,6 +2,7 @@
 #define SHADERS_H
 
 #include <GLES2/gl2.h>
+#include "../file_reading/texture_loader.h"
 
 // Triangle shader sources
 extern char* triangle_vert_shader;
@@ -35,8 +36,13 @@ extern GLuint texture_program;
 extern GLint texture_pos_loc;
 extern GLint texture_texcoord_loc;
 extern GLint texture_sampler_loc;
+extern GLint texture_texture_size_loc;
+extern GLint texture_geometry_size_loc;
 
 // Initialize texture shader
 void init_texture_shader(void);
+
+// Get current texture info
+TextureInfo get_current_texture_info(void);
 
 #endif // SHADERS_H

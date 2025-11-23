@@ -1,6 +1,21 @@
 #include "geometry.h"
 
-// Triangle vertices with position and texture coordinates 
+// Separate position and texture coordinate arrays for clarity
+const GLfloat triangle_positions[] = {
+    -0.8f, 0.5f, 0.0f,   // Position 0
+    -0.8f, -0.5f, 0.0f,  // Position 1  
+    -0.3f, -0.5f, 0.0f,  // Position 2
+    -0.3f, 0.5f, 0.0f,    // Position 3
+};
+
+const GLfloat triangle_texcoords[] = {
+    0.0f, 0.0f,             // TexCoord 0
+    0.0f, 1.0f,             // TexCoord 1
+    1.0f, 1.0f,             // TexCoord 2
+    1.0f, 0.0f              // TexCoord 3
+};
+
+// Combined vertices for compatibility with existing code
 const GLfloat triangle_verts[] = {
     -0.8f, 0.5f, 0.0f,   // Position 0
     0.0f, 0.0f,             // TexCoord 0
